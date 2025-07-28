@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster", "ConfigMapster\ConfigMapster.csproj", "{FDEE5643-6DC0-45CF-AD6F-2404D3942592}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.ApplicationService", "ConfigMapster.API.ApplicationService\ConfigMapster.API.ApplicationService.csproj", "{48ECBCB6-1912-412B-B814-ECB66C7C923E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.Domain", "ConfigMapster.API.Domain\ConfigMapster.API.Domain.csproj", "{CE8E6B1D-C8E2-43E9-BF8B-E15EFB417224}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.Persistence", "ConfigMapster.API.Persistence1\ConfigMapster.API.Persistence.csproj", "{D602F8B0-A688-45D2-9AC2-B7A1875AE873}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.Infrastructure", "ConfigMapster.API.Infrastructure\ConfigMapster.API.Infrastructure.csproj", "{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48ECBCB6-1912-412B-B814-ECB66C7C923E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48ECBCB6-1912-412B-B814-ECB66C7C923E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48ECBCB6-1912-412B-B814-ECB66C7C923E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48ECBCB6-1912-412B-B814-ECB66C7C923E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE8E6B1D-C8E2-43E9-BF8B-E15EFB417224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE8E6B1D-C8E2-43E9-BF8B-E15EFB417224}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE8E6B1D-C8E2-43E9-BF8B-E15EFB417224}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE8E6B1D-C8E2-43E9-BF8B-E15EFB417224}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D602F8B0-A688-45D2-9AC2-B7A1875AE873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D602F8B0-A688-45D2-9AC2-B7A1875AE873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D602F8B0-A688-45D2-9AC2-B7A1875AE873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D602F8B0-A688-45D2-9AC2-B7A1875AE873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A03C724D-345D-475B-85B2-A2209B2C1505}
+	EndGlobalSection
+EndGlobal

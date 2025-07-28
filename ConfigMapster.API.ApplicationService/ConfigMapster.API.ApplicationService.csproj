@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConfigMapster.API.Domain\ConfigMapster.API.Domain.csproj" />
+    <ProjectReference Include="..\ConfigMapster.API.Infrastructure\ConfigMapster.API.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

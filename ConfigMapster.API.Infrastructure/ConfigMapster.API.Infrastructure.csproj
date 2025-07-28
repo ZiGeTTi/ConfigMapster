@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Queue\" />
+    <Folder Include="Repository\Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+    <PackageReference Include="MongoDB.Driver" Version="3.4.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.58" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConfigMapster.API.Domain\ConfigMapster.API.Domain.csproj" />
+    <ProjectReference Include="..\ConfigMapster.API.Persistence1\ConfigMapster.API.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>
