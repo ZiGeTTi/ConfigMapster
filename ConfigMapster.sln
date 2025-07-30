@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API", "ConfigMapster\ConfigMapster.API.csproj", "{FDEE5643-6DC0-45CF-AD6F-2404D3942592}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.ApplicationService", "ConfigMapster.API.ApplicationService\ConfigMapster.API.ApplicationService.csproj", "{48ECBCB6-1912-412B-B814-ECB66C7C923E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.Domain", "ConfigMapster.API.Domain\ConfigMapster.API.Domain.csproj", "{CE8E6B1D-C8E2-43E9-BF8B-E15EFB417224}"
@@ -17,16 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapsterApplicationSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapsterSharedLibrary", "ConfigMapsterSharedLibrary\ConfigMapsterSharedLibrary.csproj", "{C7D446E3-59DD-49FF-89BD-95FF8ACDF699}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API", "ConfigMapster.API\ConfigMapster.API.csproj", "{56197C59-9F3A-6D07-D4DC-6E86F25004AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDEE5643-6DC0-45CF-AD6F-2404D3942592}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48ECBCB6-1912-412B-B814-ECB66C7C923E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{48ECBCB6-1912-412B-B814-ECB66C7C923E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48ECBCB6-1912-412B-B814-ECB66C7C923E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{C7D446E3-59DD-49FF-89BD-95FF8ACDF699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7D446E3-59DD-49FF-89BD-95FF8ACDF699}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7D446E3-59DD-49FF-89BD-95FF8ACDF699}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56197C59-9F3A-6D07-D4DC-6E86F25004AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56197C59-9F3A-6D07-D4DC-6E86F25004AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56197C59-9F3A-6D07-D4DC-6E86F25004AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56197C59-9F3A-6D07-D4DC-6E86F25004AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
