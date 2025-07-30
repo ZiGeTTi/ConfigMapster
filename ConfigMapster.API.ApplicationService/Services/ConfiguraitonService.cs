@@ -3,7 +3,6 @@ using ConfigMapster.API.Domain.Events;
 using ConfigMapster.Services;
 using ConfigurationApi.Documents;
 using ConfigurationApi.Entities;
-using ConfigurationApi.Events;
 using ConfigurationApi.Models.Requests;
 using ConfigurationApi.Models.Responses;
 using Microsoft.Extensions.Logging;
@@ -63,8 +62,25 @@ namespace ConfigMapster.API.ApplicationService.Services
 
         public async Task<QueryConfigurationRecordsResponse> ListConfigurations(string environment, string applicationName, CancellationToken token)
         {
-           var configs = new List<QueryConfigurationRecordsResponse>();
-           _configurationRepository.AsQueryable().
+            var documents = await _configurationRepository.FilterByAsync(
+     x => x.Environment == environment && x.ApplicationName == applicationName, token );
+
+            var items = documents.Select(doc => new ConfigurationRecordItemResponse
+            {
+                Id = doc.Id,
+                Version = doc.Version,
+                Environment = doc.Environment,
+                ApplicationName = doc.ApplicationName,
+                Key = doc.Key,
+                Value = doc.Value,
+                Type = doc.Type
+            }).ToList();
+
+            return new QueryConfigurationRecordsResponse
+            {
+                Items = items,
+                TotalRecords = items.Count
+            };
         }
 
         public async Task<UpdateConfigurationRecordResponse> UpdateConfiguraitonAsync(UpdateConfigurationRecordRequest request, CancellationToken token)

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Campaign.Service.Persistence.Redis;
+using ConfigMapster.API.Persistence.Redis;
 using StackExchange.Redis;
 
- 
+
 
 public abstract class RedisCacheServiceBase<T>
 {
@@ -68,7 +68,7 @@ public abstract class RedisCacheServiceBase<T>
     //     return data;
     // }
 
-    public async Task Clear(string key)
+    public async Task KeyDeleteAsync(string key)
     {
         await _redisDb.KeyDeleteAsync(key);
     }

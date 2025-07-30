@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster", "ConfigMapster\ConfigMapster.csproj", "{FDEE5643-6DC0-45CF-AD6F-2404D3942592}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API", "ConfigMapster\ConfigMapster.API.csproj", "{FDEE5643-6DC0-45CF-AD6F-2404D3942592}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.ApplicationService", "ConfigMapster.API.ApplicationService\ConfigMapster.API.ApplicationService.csproj", "{48ECBCB6-1912-412B-B814-ECB66C7C923E}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.Persistence", "ConfigMapster.API.Persistence1\ConfigMapster.API.Persistence.csproj", "{D602F8B0-A688-45D2-9AC2-B7A1875AE873}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapster.API.Infrastructure", "ConfigMapster.API.Infrastructure\ConfigMapster.API.Infrastructure.csproj", "{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigMapsterApplicationService.Tests", "ConfigMapsterApplicationService.Tests\ConfigMapsterApplicationService.Tests.csproj", "{384899E0-5FC2-4A75-A28A-FE63B7766614}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79AA5D93-75F5-4EDE-9E5F-F1122D4F4BDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{384899E0-5FC2-4A75-A28A-FE63B7766614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{384899E0-5FC2-4A75-A28A-FE63B7766614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{384899E0-5FC2-4A75-A28A-FE63B7766614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{384899E0-5FC2-4A75-A28A-FE63B7766614}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

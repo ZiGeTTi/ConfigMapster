@@ -1,4 +1,3 @@
-using Campaign.Service.Persistence.Redis;
 using ConfigMapster.API.Persistence.Redis;
 using ConfigurationApi.Entities;
 using StackExchange.Redis;
@@ -15,6 +14,10 @@ namespace ConfigMapster.Services
         {
         }
 
+        internal async Task<bool> KeyExistsAsync(string key)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class ConfigurationCacheService
@@ -24,13 +27,20 @@ namespace ConfigMapster.Services
         public ConfigurationCacheService(RedisClientFactory redisClientFactory, RedisConfig redisConfig)
         {
             _redisConfig = redisConfig;
-            _cacheService = new CacheService<ConfigurationRecord>(redisClientFactory, redisConfig.Database, TimeSpan.FromMinutes(_redisConfig.ExpireTimeSpan);
+            _cacheService = new CacheService<ConfigurationRecord>(redisClientFactory, redisConfig.Database, TimeSpan.FromMinutes(_redisConfig.ExpireTimeSpan));
         }
         public async Task<List<ConfigurationRecord>> GetOrAddDataAsync(string key, Func<Task<List<ConfigurationRecord>>> action)
         {
-            return await _cacheService.GetOrAddAsync(key,action);
+            return await _cacheService.GetOrAddAsync(key, action);
         }
-    }
+        public async Task KeyDeleteAsync(string key)
+        {
+            await _cacheService.KeyDeleteAsync(key);
+        }
+        public async Task<bool> SetValueAsync(string key, ConfigurationRecord value)
+        {
+            return await _cacheService.SetValueAsync(key, value);
+        }
 
- 
+    }
 }

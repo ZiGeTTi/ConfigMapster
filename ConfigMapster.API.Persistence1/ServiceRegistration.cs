@@ -1,13 +1,9 @@
-﻿using Campaign.Service.Persistence.Dapper;
-using Campaign.Service.Persistence.MongoDB;
-using Campaign.Service.Persistence.MongoDB.Settings;
-using Campaign.Service.Persistence.Redis;
+﻿
+using ConfigMapster.API.Persistence.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
-
-namespace Campaign.Service.Persistence;
 
 public static class ServiceRegistration
 {

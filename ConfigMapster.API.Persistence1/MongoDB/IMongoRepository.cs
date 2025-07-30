@@ -32,7 +32,7 @@ public interface IMongoRepository<TDocument> where TDocument: IDocument
 {
     IQueryable<TDocument> AsQueryable();
 
-    Task<List<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression);
+    Task<List<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression, CancellationToken cancellationToken);
     
     IEnumerable<TProjected> FilterBy<TProjected>(
         Expression<Func<TDocument, bool>> filterExpression,
@@ -50,7 +50,7 @@ public interface IMongoRepository<TDocument> where TDocument: IDocument
     
     Task InsertOneAsync(TDocument document);
 
-    Task InsertMany(ICollection<TDocument> documents);
+ 
 
     Task InsertManyAsync(ICollection<TDocument> documents);
 

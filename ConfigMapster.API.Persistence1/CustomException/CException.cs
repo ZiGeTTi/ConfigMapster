@@ -1,11 +1,4 @@
 
-public class DapperException : BaseException
-{
-    public DapperException(int code = 500, string message = "Persistence: Dapper Error") :
-        base(code, message)
-    {
-    }
-}
 public class MongoRepoException : BaseException
 {
     public MongoRepoException(int code = 500, string message = "Persistence: Mongo Repository Error") :

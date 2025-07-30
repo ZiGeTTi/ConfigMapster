@@ -6,6 +6,7 @@ using System;
 
 namespace ConfigurationApi.Documents
 {
+    [BsonCollection("configurations")]
     public class ConfigurationRecordDocument : Document
     {   
         public int Version { get; set; }
@@ -35,7 +36,7 @@ namespace ConfigurationApi.Documents
                 isActive: document.IsActive,
 
                 identity: new IdentityValueObject(document.Id, document.Version),
-                audit: new AuditValueObject(document.CreatedAt, document.UpdatedAt)
+                audit: new AuditValueObject(document.CreatedAt, document.LastModifiedAt)
                 );
 
             return configurationRecord;

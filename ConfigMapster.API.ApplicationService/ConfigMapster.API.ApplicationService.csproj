@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ConfigMapster.API.Domain\ConfigMapster.API.Domain.csproj" />
     <ProjectReference Include="..\ConfigMapster.API.Infrastructure\ConfigMapster.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\ConfigMapster.API.Persistence1\ConfigMapster.API.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

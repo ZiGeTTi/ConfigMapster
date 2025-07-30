@@ -36,9 +36,9 @@ public class MongoRepository<TDocument>:IMongoRepository<TDocument> where TDocum
         return _collection.AsQueryable();
     }
 
-    public async Task<List<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression)
+    public async Task<List<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression, CancellationToken cancellationToken)
     {
-        var result = await _collection.FindAsync(filterExpression);
+        var result = await _collection.FindAsync(filterExpression, cancellationToken:cancellationToken);
 
         return result.ToEnumerable().ToList();
     }
@@ -93,10 +93,6 @@ public class MongoRepository<TDocument>:IMongoRepository<TDocument> where TDocum
       
     }
 
-    public async Task InsertMany(ICollection<TDocument> documents)
-    {
-        _collection.InsertMany(documents);
-    }
 
     public virtual async Task InsertManyAsync(ICollection<TDocument> documents)
     {
@@ -153,8 +149,8 @@ public class MongoRepository<TDocument>:IMongoRepository<TDocument> where TDocum
     {
         return Task.Run(() =>
         {
-            var objectId = new ObjectId(id);
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+            //var objectId = new ObjectId(id);
+            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
             _collection.FindOneAndDeleteAsync(filter);
         });
     }
