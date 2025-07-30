@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace ConfigMapster.API.ApplicationService.Services
 {
-    public class ConfiguraitonService:IConfiguraitonService
+    public class ConfiguraitonService : IConfiguraitonService
     {
         private readonly IMongoRepository<ConfigurationRecordDocument> _configurationRepository;
         private readonly ConfigurationCacheService _redisCacheService;
@@ -38,10 +38,11 @@ namespace ConfigMapster.API.ApplicationService.Services
             request.ApplicationName,
             request.Key,
             request.Value,
-            request.Type
+            request.Type,
+            isActive: true
         );
-            IsValidValue(request.Type,request.Value);
-            
+            IsValidValue(request.Type, request.Value);
+
             await _configurationRepository.InsertOneAsync(config.ToDocument());
 
             ConfigurationRecordCreated configurationRecordCreated = new ConfigurationRecordCreated()
@@ -60,13 +61,13 @@ namespace ConfigMapster.API.ApplicationService.Services
             var existingConfigDoc = await _configurationRepository.FindByIdAsync(id);
             var configMapster = existingConfigDoc.ToEntity();
             configMapster.Delete();
-             await  _configurationRepository.ReplaceOneAsync(configMapster.ToDocument(), cancellationToken:token);
+            await _configurationRepository.ReplaceOneAsync(configMapster.ToDocument(), cancellationToken: token);
         }
 
-        public async Task<QueryConfigurationRecordsResponse> ListConfigurations(string environment, string applicationName, CancellationToken token)
+        public async Task<QueryConfigurationRecordsResponse> ListConfigurations(string applicationName, CancellationToken token)
         {
             var documents = await _configurationRepository.FilterByAsync(
-     x => x.Environment == environment && x.ApplicationName == applicationName, token );
+                 x => x.ApplicationName == applicationName, token);
 
             var items = documents.Select(doc => new ConfigurationRecordItemResponse
             {
@@ -96,8 +97,8 @@ namespace ConfigMapster.API.ApplicationService.Services
 
             var config = existingConfig.ToEntity();
             config.Update(request.Value, request.Type);
-   
-            await _configurationRepository.ReplaceOneAsync(config.ToDocument(), cancellationToken:token);
+
+            await _configurationRepository.ReplaceOneAsync(config.ToDocument(), cancellationToken: token);
 
             return new UpdateConfigurationRecordResponse
             {
@@ -118,4 +119,4 @@ namespace ConfigMapster.API.ApplicationService.Services
             };
         }
     }
-    }
+}

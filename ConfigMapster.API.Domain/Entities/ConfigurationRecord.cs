@@ -1,5 +1,7 @@
 ﻿using ConfigMapster.API.Domain.Events;
 using ConfigurationApi.Entities.ValueObjects;
+using System;
+using System.Reflection.Metadata;
 
 namespace ConfigurationApi.Entities
 {
@@ -24,8 +26,8 @@ namespace ConfigurationApi.Entities
             ) : base(identity)
         {
             IsActive = isActive;
-            Audit = audit;
-
+            Audit = new AuditValueObject(DateTime.Now, null);
+            
             Environment = environment;
             ApplicationName = applicationName;
             Key = key;

@@ -11,8 +11,6 @@ using MongoDB.Bson.Serialization.Attributes;
 
 public interface IDocument
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.String)]
     Guid Id { get; set; }
 
     DateTime CreatedAt { get; }
@@ -23,6 +21,8 @@ public interface IDocument
 
 public abstract class Document : IDocument
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.String)]
     public Guid Id { get; set; }
 
     public DateTime CreatedAt { get; set; }

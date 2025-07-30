@@ -14,6 +14,6 @@ namespace ConfigMapster.API.ApplicationService.Services.Interfaces
         Task<CreateConfigurationRecordResponse> CreateConfiguraitonAsync(CreateConfigurationRecordRequest request, CancellationToken token);
         Task<UpdateConfigurationRecordResponse> UpdateConfiguraitonAsync(UpdateConfigurationRecordRequest request, CancellationToken token);
         Task DeleteConfiguraitonAsync(Guid id, CancellationToken token);
-        Task <QueryConfigurationRecordsResponse> ListConfigurations(string environment, string applicationName, CancellationToken token);
+        Task <QueryConfigurationRecordsResponse> ListConfigurations(string applicationName, CancellationToken token);
     }
 }

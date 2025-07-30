@@ -52,9 +52,9 @@ namespace ConfigMapster.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(QueryConfigurationRecordsResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<IActionResult> List([FromQuery] string environment, [FromQuery] string applicationName, CancellationToken token)
+        public async Task<IActionResult> List([FromQuery] string applicationName, CancellationToken token)
         {
-            var result = await _configService.ListConfigurations(environment, applicationName, token);
+            var result = await _configService.ListConfigurations(applicationName, token);
             return Ok(result);
         }
     }
