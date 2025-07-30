@@ -10,4 +10,8 @@
     <ProjectReference Include="..\ConfigMapster.API.Persistence1\ConfigMapster.API.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validations\" />
+  </ItemGroup>
+
 </Project>

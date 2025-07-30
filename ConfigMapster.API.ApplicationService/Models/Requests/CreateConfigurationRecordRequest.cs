@@ -1,4 +1,7 @@
-﻿namespace ConfigurationApi.Models.Requests
+﻿using ConfigMapster.API.Infrastructure.Validators;
+using System;
+
+namespace ConfigurationApi.Models.Requests
 {
     public class CreateConfigurationRecordRequest
     {

@@ -1,5 +1,6 @@
 ﻿using ConfigMapster.API.ApplicationService.Services.Interfaces;
 using ConfigMapster.API.Domain.Events;
+using ConfigMapster.API.Infrastructure.Validators;
 using ConfigMapster.Services;
 using ConfigurationApi.Documents;
 using ConfigurationApi.Entities;
@@ -8,6 +9,7 @@ using ConfigurationApi.Models.Responses;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -38,7 +40,8 @@ namespace ConfigMapster.API.ApplicationService.Services
             request.Value,
             request.Type
         );
-
+            IsValidValue(request.Type,request.Value);
+            
             await _configurationRepository.InsertOneAsync(config.ToDocument());
 
             ConfigurationRecordCreated configurationRecordCreated = new ConfigurationRecordCreated()
@@ -85,24 +88,34 @@ namespace ConfigMapster.API.ApplicationService.Services
 
         public async Task<UpdateConfigurationRecordResponse> UpdateConfiguraitonAsync(UpdateConfigurationRecordRequest request, CancellationToken token)
         {
-            // Find the existing document by Id
+            IsValidValue(request.Type, request.Value);
+
             var existingConfig = await _configurationRepository.FindOneAsync(x => x.Id == request.Id);
             if (existingConfig == null)
                 throw new KeyNotFoundException($"Configuration with ID {request.Key} not found.");
 
-            var config = existingConfig.ToEntity(); // Convert to entity if needed
+            var config = existingConfig.ToEntity();
             config.Update(request.Value, request.Type);
-        
-            // Persist the updated document.
+   
             await _configurationRepository.ReplaceOneAsync(config.ToDocument(), cancellationToken:token);
-
-
 
             return new UpdateConfigurationRecordResponse
             {
                 Id = config.IdentityObject.Id,
             };
         }
+        private bool IsValidValue(string value, string type)
+        {
+            if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(type)) return false;
 
+            return type.ToLower() switch
+            {
+                "int" => int.TryParse(value, out _),
+                "double" => double.TryParse(value, out _),
+                "bool" => bool.TryParse(value, out _),
+                "string" => true,
+                _ => throw new ValidationException($"Unsupported type: {type}. Supported types are int, double, bool, string.")
+            };
+        }
     }
-}
+    }
