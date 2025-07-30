@@ -1,5 +1,6 @@
 using ConfigMapster.API.Persistence.Redis;
 using ConfigurationApi.Entities;
+using RedLockNet;
 using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
@@ -24,8 +25,12 @@ namespace ConfigMapster.Services
     {
         private readonly CacheService<ConfigurationRecord> _cacheService;
         private RedisConfig _redisConfig;
+        private readonly IDistributedLockFactory _redLockFactory;
+        private readonly RedisClientFactory _redisClientFactory;
         public ConfigurationCacheService(RedisClientFactory redisClientFactory, RedisConfig redisConfig)
-        {
+        { 
+            _redisClientFactory = redisClientFactory;
+            _redLockFactory = redisClientFactory.distributedLockFactory;
             _redisConfig = redisConfig;
             _cacheService = new CacheService<ConfigurationRecord>(redisClientFactory, redisConfig.Database, TimeSpan.FromMinutes(_redisConfig.ExpireTimeSpan));
         }
@@ -40,6 +45,23 @@ namespace ConfigMapster.Services
         public async Task<bool> SetValueAsync(string key, ConfigurationRecord value)
         {
             return await _cacheService.SetValueAsync(key, value);
+        }
+        public async Task<List<ConfigurationRecord>> GetValueAsync(string key)
+        {
+            return await _cacheService.GetValueAsync(key);
+        }
+
+        public async Task<TResult> ExecuteWithDistributedLockAsync<TResult>(string key, TimeSpan timeout, Func<Task<TResult>> action)
+        {
+            var redLockFactory = _redisClientFactory.distributedLockFactory;
+            using (var redLock = await redLockFactory.CreateLockAsync(key, timeout))
+            {
+                if (redLock.IsAcquired)
+                {
+                    return await action();
+                }
+                throw new Exception("Could not acquire distributed lock.");
+            }
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using ConfigMapster.API.ApplicationService.Services.Interfaces;
+﻿using ConfigMapsterSharedLibrary;
+using ConfigMapster.API.ApplicationService.Services.Interfaces;
 using ConfigurationApi.Models.Requests;
 using ConfigurationApi.Models.Responses;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace ConfigMapster.Controllers
 {
@@ -15,10 +17,12 @@ namespace ConfigMapster.Controllers
     public class ConfigController : ControllerBase
     {
         private readonly IConfiguraitonService _configService;
+        private readonly ConfigurationReader _configurationReader;
 
-        public ConfigController(IConfiguraitonService configService)
+        public ConfigController(IConfiguraitonService configService, ConfigurationReader configurationReader)
         {
             _configService = configService;
+            _configurationReader = configurationReader;
         }
 
         [HttpPost("insert")]
@@ -30,6 +34,7 @@ namespace ConfigMapster.Controllers
             var result = await _configService.CreateConfiguraitonAsync(request, token);
             return Created($"api/v1/configurations/{result.Id}", result);
         }
+
         [HttpPut("update")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateConfigurationRecordResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
@@ -38,6 +43,7 @@ namespace ConfigMapster.Controllers
         {
             return Ok(await _configService.UpdateConfiguraitonAsync(request, token));
         }
+
         [HttpDelete("delete")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -48,6 +54,7 @@ namespace ConfigMapster.Controllers
             await _configService.DeleteConfiguraitonAsync(id, cancellationToken);
             return NoContent();
         }
+
         [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(QueryConfigurationRecordsResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
@@ -56,6 +63,22 @@ namespace ConfigMapster.Controllers
         {
             var result = await _configService.ListConfigurations(applicationName, token);
             return Ok(result);
+        }
+
+        [HttpGet("ConfigLibMethod")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetValue([FromQuery] string appName)
+        {
+            try
+            {
+
+                return Ok(await _configurationReader.GetValueAsync<string>(appName));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

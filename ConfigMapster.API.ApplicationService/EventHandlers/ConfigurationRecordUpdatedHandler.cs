@@ -21,8 +21,8 @@ namespace ConfigMapster.API.ApplicationService.EventHandlers
 
         public async Task HandleAsync(ConfigurationRecordUpdated domainEvent, CancellationToken cancellationToken = default)
         {
-            await _redisService.KeyDeleteAsync(domainEvent.Key);
-            var document = await _mongoRepository.FindOneAsync(x => x.Key == domainEvent.Key);
+            await _redisService.KeyDeleteAsync(domainEvent.ApplicationName);
+            var document = await _mongoRepository.FindOneAsync(x => x.ApplicationName == domainEvent.ApplicationName);
             await _redisService.SetValueAsync(domainEvent.Key,document.ToEntity() );
         }
     }

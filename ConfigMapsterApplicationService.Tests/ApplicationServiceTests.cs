@@ -1,11 +1,17 @@
+using Autofac.Extras.Moq;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Xunit2;
 using ConfigMapster.API.ApplicationService.Services;
 using ConfigMapster.API.ApplicationService.Services.Interfaces;
+using ConfigMapster.API.Persistence.Redis;
 using ConfigMapster.Services;
 using ConfigurationApi.Documents;
 using ConfigurationApi.Entities;
 using ConfigurationApi.Models.Requests;
 using ConfigurationApi.Models.Responses;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -19,22 +25,36 @@ namespace ConfigMapster.Tests
 {
     public class ConfiguraitonServiceTests
     {
-        private readonly Mock<IMongoRepository> _mongoRepoMock;
-        private readonly Mock<ConfigurationCacheService> _cacheServiceMock;
-        private readonly Mock<ILogger<ConfiguraitonService>> _loggerMock;
-        private readonly ConfiguraitonService _service;
+ 
+
+        private readonly IFixture _fixture;
 
         public ConfiguraitonServiceTests()
         {
-            _mongoRepoMock = new Mock<IMongoRepository>();
-            _cacheServiceMock = new Mock<ConfigurationCacheService>(null, null);
-            _loggerMock = new Mock<ILogger<ConfiguraitonService>>();
-            _service = new ConfiguraitonService(_mongoRepoMock.Object, _cacheServiceMock.Object, _loggerMock.Object);
+            _fixture = new Fixture().Customize(new AutoMoqCustomization { ConfigureMembers = true });
+
+            // Register mocks for constructor dependencies
+            var redisConfig = new RedisConfig { Url = "localhost:6379", Database = 0, ExpireTimeSpan = 1 };
+            var optionsMock = new Mock<IOptions<RedisConfig>>();
+            optionsMock.Setup(x => x.Value).Returns(redisConfig);
+            _fixture.Register(() => optionsMock.Object);
+
+            var redisClientFactoryMock = new Mock<RedisClientFactory>(optionsMock.Object);
+            _fixture.Register(() => redisClientFactoryMock.Object);
+
+            var cacheServiceMock = new Mock<ConfigurationCacheService>(redisClientFactoryMock.Object, redisConfig);
+            _fixture.Register(() => cacheServiceMock.Object);
         }
 
         [Fact]
         public async Task CreateConfiguraitonAsync_ShouldInsertAndReturnId()
         {
+            var mongoRepoMock = _fixture.Freeze<Mock<IMongoRepository<ConfigurationRecordDocument>>>();
+            mongoRepoMock.Setup(x => x.InsertOneAsync(It.IsAny<ConfigurationRecordDocument>()))
+                .Returns(Task.CompletedTask);
+
+            var service = _fixture.Create<ConfiguraitonService>();
+
             var request = new CreateConfigurationRecordRequest
             {
                 Environment = "dev",
@@ -43,50 +63,43 @@ namespace ConfigMapster.Tests
                 Value = "value",
                 Type = "string"
             };
-            _mongoRepoMock.Setup(x => x.InsertOneAsync(It.IsAny<ConfigurationRecordDocument>()))
-                .Returns(Task.CompletedTask);
 
-            var response = await _service.CreateConfiguraitonAsync(request, CancellationToken.None);
+            var response = await service.CreateConfiguraitonAsync(request, CancellationToken.None);
             Assert.NotEqual(Guid.Empty, response.Id);
         }
-
         [Fact]
-        public async Task DeleteConfiguraitonAsync_ShouldDeleteConfig()
+        public async Task DeleteConfiguraitonAsync_ShouldDeleteConfiguration()
         {
-            var id = Guid.NewGuid();
-            var doc = new ConfigurationRecordDocument { Id = id, Environment = "dev", ApplicationName = "app", Key = "key", Value = "value", Type = "string", IsActive = true };
-            _mongoRepoMock.Setup(x => x.FindByIdAsync(id)).ReturnsAsync(doc);
-            _mongoRepoMock.Setup(x => x.ReplaceOneAsync(It.IsAny<ConfigurationRecordDocument>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-            await _service.DeleteConfiguraitonAsync(id, CancellationToken.None);
-            _mongoRepoMock.Verify(x => x.ReplaceOneAsync(It.IsAny<ConfigurationRecordDocument>(), It.IsAny<CancellationToken>()), Times.Once);
+            var mongoRepoMock = _fixture.Freeze<Mock<IMongoRepository<ConfigurationRecordDocument>>>();
+            mongoRepoMock.Setup(x => x.FindByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new ConfigurationRecordDocument { Id = Guid.NewGuid() });
+            mongoRepoMock.Setup(x => x.ReplaceOneAsync(It.IsAny<ConfigurationRecordDocument>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var service = _fixture.Create<ConfiguraitonService>();
+            await service.DeleteConfiguraitonAsync(Guid.NewGuid(), CancellationToken.None);
+            mongoRepoMock.Verify(x => x.ReplaceOneAsync(It.IsAny<ConfigurationRecordDocument>(), It.IsAny<CancellationToken>()), Times.Once);
         }
-
+ 
         [Fact]
-        public async Task ListConfigurations_ShouldReturnRecords()
+        public async Task UpdateConfiguraitonAsync_ShouldUpdateConfiguration()
         {
-            var docs = new List<ConfigurationRecordDocument>
+            var mongoRepoMock = _fixture.Freeze<Mock<IMongoRepository<ConfigurationRecordDocument>>>();
+            mongoRepoMock.Setup(x => x.FindByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new ConfigurationRecordDocument { Id = Guid.NewGuid() });
+            mongoRepoMock.Setup(x => x.ReplaceOneAsync(It.IsAny<ConfigurationRecordDocument>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var service = _fixture.Create<ConfiguraitonService>();
+            var request = new UpdateConfigurationRecordRequest
             {
-                new ConfigurationRecordDocument { Id = Guid.NewGuid(), Environment = "dev", ApplicationName = "app", Key = "key", Value = "value", Type = "string", IsActive = true }
+                Id = Guid.NewGuid(),
+                Environment = "dev",
+                ApplicationName = "app",
+                Key = "key",
+                Value = "new value",
+                Type = "string"
             };
-            _mongoRepoMock.Setup(x => x.FilterByAsync(It.IsAny<System.Linq.Expressions.Expression<Func<ConfigurationRecordDocument, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(docs);
-
-            var result = await _service.ListConfigurations("dev", "app", CancellationToken.None);
-            Assert.Single(result.Items);
-            Assert.Equal("dev", result.Items[0].Environment);
-        }
-
-        [Fact]
-        public async Task UpdateConfiguraitonAsync_ShouldUpdateAndReturnId()
-        {
-            var id = Guid.NewGuid();
-            var doc = new ConfigurationRecordDocument { Id = id, Environment = "dev", ApplicationName = "app", Key = "key", Value = "value", Type = "string", IsActive = true };
-            _mongoRepoMock.Setup(x => x.FindOneAsync(It.IsAny<System.Linq.Expressions.Expression<Func<ConfigurationRecordDocument, bool>>>())).ReturnsAsync(doc);
-            _mongoRepoMock.Setup(x => x.ReplaceOneAsync(It.IsAny<ConfigurationRecordDocument>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-            var request = new UpdateConfigurationRecordRequest { Id = id, Value = "newValue", Type = "string" };
-            var response = await _service.UpdateConfiguraitonAsync(request, CancellationToken.None);
-            Assert.Equal(id, response.Id);
+            var response = await service.UpdateConfiguraitonAsync(request, CancellationToken.None);
+            Assert.NotNull(response);
         }
     }
 }

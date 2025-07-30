@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ConfigMapster.API.ApplicationService\ConfigMapster.API.ApplicationService.csproj" />
+    <ProjectReference Include="..\ConfigMapsterSharedLibrary\ConfigMapsterSharedLibrary.csproj" />
   </ItemGroup>
 
 </Project>

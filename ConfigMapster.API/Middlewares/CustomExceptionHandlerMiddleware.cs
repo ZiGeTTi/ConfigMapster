@@ -29,11 +29,11 @@ namespace ConfigMapster.Middlewares
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception occurred.");
-
+                var (statusCode,title) = GetStatusCode(ex);
                 var problemDetails = new ProblemDetails
                 {
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Title = "An unexpected error occurred.",
+                    Status = statusCode,
+                    Title = title,
                     Detail = ex.Message,
                     Instance = context.Request.Path
                 };
@@ -48,6 +48,7 @@ namespace ConfigMapster.Middlewares
         private static (int, string) GetStatusCode(Exception exception) => exception switch
         {
             ValidationException => (StatusCodes.Status400BadRequest, nameof(StatusCodes.Status400BadRequest)),
+            InvalidCastException => (StatusCodes.Status400BadRequest, nameof(StatusCodes.Status400BadRequest)),
 
             ObjectNotFoundException => (StatusCodes.Status404NotFound, nameof(StatusCodes.Status404NotFound)),
 

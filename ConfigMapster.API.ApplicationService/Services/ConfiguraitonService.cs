@@ -41,7 +41,7 @@ namespace ConfigMapster.API.ApplicationService.Services
             request.Type,
             isActive: true
         );
-            IsValidValue(request.Type, request.Value);
+            IsValidValue(request.Value, request.Type);
 
             await _configurationRepository.InsertOneAsync(config.ToDocument());
 
@@ -89,7 +89,7 @@ namespace ConfigMapster.API.ApplicationService.Services
 
         public async Task<UpdateConfigurationRecordResponse> UpdateConfiguraitonAsync(UpdateConfigurationRecordRequest request, CancellationToken token)
         {
-            IsValidValue(request.Type, request.Value);
+            IsValidValue(request.Value, request.Type);
 
             var existingConfig = await _configurationRepository.FindOneAsync(x => x.Id == request.Id);
             if (existingConfig == null)

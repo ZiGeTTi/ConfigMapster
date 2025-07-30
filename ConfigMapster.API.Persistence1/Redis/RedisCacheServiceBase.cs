@@ -32,9 +32,10 @@ public abstract class RedisCacheServiceBase<T>
         return true;
     }
 
-    public async Task<string> GetValueAsync(string key)
+    public async Task<List<T>> GetValueAsync(string key)
     {
-        return await _redisDb.StringGetAsync(key);
+         await _redisDb.StringGetAsync(key);
+        return TryGetValue(key, out var result) ? result : default;
     }
 
     public async Task<bool> SetValueAsync(string key, T value)
