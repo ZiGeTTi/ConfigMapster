@@ -22,7 +22,7 @@ namespace ConfigMapster.API.Infrastructure.Queue
         private readonly ILogger<RabbitMqConsumerService> _logger;
         private IConnection _connection;
         private IModel _channel;
-        private readonly DomainEventDispatcher _dispatcher;
+ 
         public RabbitMqConsumerService(
            IOptions<RabbitMqSettings> options,
             IServiceProvider serviceProvider,
@@ -53,27 +53,49 @@ namespace ConfigMapster.API.Infrastructure.Queue
             {
                 _ = Task.Run(async () =>
                 {
-
-
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
-
 
                     _logger?.LogInformation($"[RabbitMQ] Received event: {message}");
 
                     try
                     {
-
-                        var baseEvent = JsonSerializer.Deserialize<ConfigurationRecordDeleted>(message);
-                        if (baseEvent != null)
+                        using (var doc = JsonDocument.Parse(message))
                         {
-                            using (var scope = _serviceProvider.CreateScope())
+                            if (!doc.RootElement.TryGetProperty("EventType", out var eventTypeProp))
                             {
-                                var dispatcher = scope.ServiceProvider.GetRequiredService<DomainEventDispatcher>();
-                                await dispatcher.DispatchAsync(baseEvent, stoppingToken);
+                                _logger?.LogWarning("EventType property missing in event message.");
+                                return;
+                            }
+
+                            var eventTypeName = eventTypeProp.GetString();
+
+                            Type eventType = eventTypeName switch
+                            {
+                                nameof(ConfigurationRecordDeleted) => typeof(ConfigurationRecordDeleted),
+                                nameof(ConfigurationRecordCreated) => typeof(ConfigurationRecordCreated),
+                                nameof(ConfigurationRecordUpdated) => typeof(ConfigurationRecordUpdated),
+                                // Add more event types here as needed
+                                _ => null
+                            };
+
+                            if (eventType == null)
+                            {
+                                _logger?.LogWarning($"Unknown event type: {eventTypeName}");
+                                return;
+                            }
+
+                            var baseEvent = (BaseEvent)JsonSerializer.Deserialize(message, eventType);
+
+                            if (baseEvent != null)
+                            {
+                                using (var scope = _serviceProvider.CreateScope())
+                                {
+                                    var dispatcher = scope.ServiceProvider.GetRequiredService<DomainEventDispatcher>();
+                                    await dispatcher.DispatchAsync(baseEvent, stoppingToken);
+                                }
                             }
                         }
-
                     }
                     catch (Exception ex)
                     {
@@ -86,7 +108,6 @@ namespace ConfigMapster.API.Infrastructure.Queue
 
             return Task.CompletedTask;
         }
-
         public override void Dispose()
         {
             _channel?.Close();

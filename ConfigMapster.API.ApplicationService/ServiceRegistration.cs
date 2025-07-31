@@ -22,6 +22,8 @@ namespace ConfigMapster.API.ApplicationService
             serviceCollection.AddScoped<DomainEventDispatcher>();
             serviceCollection.AddScoped<IEventHandler<ConfigurationRecordDeleted>, ConfigurationRecordDeletedHandler>();
             serviceCollection.AddScoped<IEventHandler<ConfigurationRecordUpdated>, ConfigurationRecordUpdatedHandler>();
+            serviceCollection.AddScoped<IEventHandler<ConfigurationRecordCreated>, ConfigurationRecordCreatedHandler>();
+
             serviceCollection.AddScoped<IConfiguraitonService, ConfiguraitonService>();
             var redisConfig = configuration.GetSection("RedisConfig").Get<RedisConfig>();
             serviceCollection.Configure<RedisConfig>(configuration.GetSection("RedisConfig"));

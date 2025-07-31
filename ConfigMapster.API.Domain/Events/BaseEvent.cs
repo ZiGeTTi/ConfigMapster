@@ -9,5 +9,6 @@ namespace ConfigMapster.API.Domain.Events
     public class BaseEvent
     {
         public Guid ConfigurationRecordId { get; set; }
+        
     }
 }

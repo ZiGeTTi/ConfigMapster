@@ -1,6 +1,7 @@
 ﻿using ConfigMapster.API.Domain.Events;
 using ConfigurationApi.Entities.ValueObjects;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
 
 namespace ConfigurationApi.Entities
@@ -34,7 +35,24 @@ namespace ConfigurationApi.Entities
             Value = value;
             Type = type;
         }
-
+        public void Create()
+        {
+            if (string.IsNullOrWhiteSpace(ApplicationName) ||
+                string.IsNullOrWhiteSpace(Key) || string.IsNullOrWhiteSpace(Value) || string.IsNullOrWhiteSpace(Type))
+            {
+                throw new ValidationException("Environment, ApplicationName, Key, Value, and Type cannot be null or empty.");
+            }
+            RaiseDomainEvent(new ConfigurationRecordCreated
+            {
+                IsActive = IsActive,
+                Environment = Environment,
+                ApplicationName = ApplicationName,
+                Key = Key,
+                Value = Value,
+                Type = Type,
+                Version = IdentityObject.Version
+            });
+        }
         public void Update(string value, string type)
         {
             Value = value.Trim();

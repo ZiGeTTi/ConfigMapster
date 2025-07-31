@@ -20,7 +20,8 @@ namespace ConfigMapster.API.ApplicationService.EventHandlers
 
         public async Task HandleAsync(ConfigurationRecordDeleted domainEvent, CancellationToken cancellationToken = default)
         {
-            await _redisService.KeyDeleteAsync(domainEvent.ApplicationName);
+            var cacheKey = $"{domainEvent.ApplicationName}_{domainEvent.Key}";
+            await _redisService.KeyDeleteAsync(cacheKey);
         }
     }
 }

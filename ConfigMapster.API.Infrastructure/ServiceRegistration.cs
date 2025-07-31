@@ -24,10 +24,8 @@ namespace ConfigMapster.API.Infrastructure
             var rabbitExchange = configuration["RabbitMq:Exchange"] ?? "domain_events";
             serviceCollection.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMq"));
             serviceCollection.AddSingleton<IMessagePublisher>(new RabbitMqPublisher(rabbitHost, rabbitExchange));
-     
-            serviceCollection.AddScoped<DomainEventDispatcher>();
 
-            serviceCollection.AddSingleton<IHostedService, RabbitMqConsumerService>();
+            serviceCollection.AddHostedService<RabbitMqConsumerService>();
 
         }
     }

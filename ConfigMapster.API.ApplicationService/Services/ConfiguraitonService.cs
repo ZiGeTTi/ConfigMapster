@@ -1,5 +1,6 @@
 ﻿using ConfigMapster.API.ApplicationService.Services.Interfaces;
 using ConfigMapster.API.Domain.Events;
+using ConfigMapster.API.Domain.Messaging;
 using ConfigMapster.API.Infrastructure.Validators;
 using ConfigMapster.Services;
 using ConfigurationApi.Documents;
@@ -22,12 +23,16 @@ namespace ConfigMapster.API.ApplicationService.Services
         private readonly IMongoRepository<ConfigurationRecordDocument> _configurationRepository;
         private readonly ConfigurationCacheService _redisCacheService;
         private readonly ILogger<ConfiguraitonService> _logger;
+        private readonly IMessagePublisher _messagePublisher;
 
-        public ConfiguraitonService(IMongoRepository<ConfigurationRecordDocument> mongoRepository, ConfigurationCacheService redisCacheService, ILogger<ConfiguraitonService> logger)
+
+        public ConfiguraitonService(IMongoRepository<ConfigurationRecordDocument> mongoRepository, ConfigurationCacheService redisCacheService, ILogger<ConfiguraitonService> logger,
+            IMessagePublisher messagePublisher)
         {
             _configurationRepository = mongoRepository;
             _redisCacheService = redisCacheService;
             _logger = logger;
+            _messagePublisher = messagePublisher;
         }
 
         public async Task<CreateConfigurationRecordResponse> CreateConfiguraitonAsync(CreateConfigurationRecordRequest request, CancellationToken token)
@@ -41,15 +46,20 @@ namespace ConfigMapster.API.ApplicationService.Services
             request.Type,
             isActive: true
         );
+            config.Create();
             IsValidValue(request.Value, request.Type);
 
             await _configurationRepository.InsertOneAsync(config.ToDocument());
-
-            ConfigurationRecordCreated configurationRecordCreated = new ConfigurationRecordCreated()
+            await _messagePublisher.PublishAsync(new ConfigurationRecordCreated
             {
-                ConfigurationRecordId = config.IdentityObject.Id
-            };
-
+                IsActive = config.IsActive,
+                Environment = config.Environment,
+                ApplicationName = config.ApplicationName,
+                Key = config.Key,
+                Value = config.Value,
+                Type = config.Type,
+                Version = config.IdentityObject.Version
+            });
             return new CreateConfigurationRecordResponse
             {
                 Id = config.IdentityObject.Id
@@ -99,6 +109,16 @@ namespace ConfigMapster.API.ApplicationService.Services
             config.Update(request.Value, request.Type);
 
             await _configurationRepository.ReplaceOneAsync(config.ToDocument(), cancellationToken: token);
+            await _messagePublisher.PublishAsync(new ConfigurationRecordUpdated
+            {
+                IsActive = config.IsActive,
+                Environment = config.Environment,
+                ApplicationName = config.ApplicationName,
+                Key = config.Key,
+                Value = config.Value,
+                Type = config.Type,
+                Version = config.IdentityObject.Version
+            });
 
             return new UpdateConfigurationRecordResponse
             {

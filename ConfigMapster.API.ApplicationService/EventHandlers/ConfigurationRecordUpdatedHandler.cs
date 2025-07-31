@@ -14,16 +14,18 @@ namespace ConfigMapster.API.ApplicationService.EventHandlers
     {
         private readonly ConfigurationCacheService _redisService;
         private readonly IMongoRepository<ConfigurationRecordDocument> _mongoRepository;
-        public ConfigurationRecordUpdatedHandler(ConfigurationCacheService redisService)
+        public ConfigurationRecordUpdatedHandler(ConfigurationCacheService redisService, IMongoRepository<ConfigurationRecordDocument> mongoRepository)
         {
             _redisService = redisService;
+            _mongoRepository = mongoRepository;
         }
 
         public async Task HandleAsync(ConfigurationRecordUpdated domainEvent, CancellationToken cancellationToken = default)
         {
-            await _redisService.KeyDeleteAsync(domainEvent.ApplicationName);
-            var document = await _mongoRepository.FindOneAsync(x => x.ApplicationName == domainEvent.ApplicationName);
-            await _redisService.SetValueAsync(domainEvent.Key,document.ToEntity() );
+            var cacheKey = $"{domainEvent.ApplicationName}_{domainEvent.Key}";
+            await _redisService.KeyDeleteAsync(cacheKey);
+            var document = await _mongoRepository.FindOneAsync(x => x.ApplicationName == domainEvent.ApplicationName && x.IsActive);
+            await _redisService.SetValueAsync(cacheKey, document.ToEntity() );
         }
     }
 }
